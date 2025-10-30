@@ -1,2 +1,2 @@
 # SilverCare
-a flutter project
+A Flutter project
