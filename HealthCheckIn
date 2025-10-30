@@ -1,0 +1,277 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const HealthCheckInApp());
+}
+
+class HealthCheckInApp extends StatelessWidget {
+  const HealthCheckInApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Health Check-In',
+      theme: ThemeData(
+        primarySwatch: Colors.orange,
+        scaffoldBackgroundColor: const Color(0xFFDEDEDE),
+        fontFamily: 'Montserrat',
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.orange,
+          foregroundColor: Colors.white,
+          titleTextStyle: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w800,
+            fontFamily: 'Montserrat',
+          ),
+        ),
+      ),
+      home: const MainNavigation(),
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+class MainNavigation extends StatefulWidget {
+  const MainNavigation({super.key});
+
+  @override
+  State<MainNavigation> createState() => _MainNavigationState();
+}
+
+class _MainNavigationState extends State<MainNavigation> {
+  int _selectedIndex = 0;
+
+  final List<Widget> _pages = <Widget>[
+    const DashboardPage(),
+    const HealthStatsPage(),
+    const ProfilePage(),
+    const NotificationPage(),
+    const CalendarPage(),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _pages[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.orange,
+        unselectedItemColor: Colors.grey[700],
+        type: BottomNavigationBarType.fixed,
+        onTap: _onItemTapped,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+          BottomNavigationBarItem(icon: Icon(Icons.favorite), label: "Health"),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.notifications_none), label: "Notifications"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.calendar_today), label: "Calendar"),
+        ],
+      ),
+    );
+  }
+}
+
+class DashboardPage extends StatelessWidget {
+  const DashboardPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Health Check-In'),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(20),
+        children: [
+          const SizedBox(height: 10),
+          GridView.count(
+            crossAxisCount: 3, // Minimized to 3 columns
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            mainAxisSpacing: 20,
+            crossAxisSpacing: 20,
+            children: <Widget>[
+              const DashboardCard(
+                title: "Blood Pressure",
+                color: Color(0xFFFF9837),
+                icon: Icons.monitor_heart,
+              ),
+              const DashboardCard(
+                title: "Sugar Level",
+                color: Color(0xFF37FF6C),
+                icon: Icons.bloodtype,
+              ),
+              const DashboardCard(
+                title: "Temperature",
+                color: Color(0xFF42A3F4),
+                icon: Icons.thermostat,
+              ),
+              const DashboardCard(
+                title: "Heart Rate",
+                color: Color(0xFFCD5C5C),
+                icon: Icons.favorite,
+              ),
+              DashboardCard(
+                title: "Emergency SOS",
+                color: Colors.red.shade600,
+                icon: Icons.warning,
+                onTap: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("SOS Alert Sent! 🚨")),
+                  );
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class DashboardCard extends StatelessWidget {
+  final String title;
+  final Color color;
+  final IconData icon;
+  final VoidCallback? onTap;
+
+  const DashboardCard({
+    super.key,
+    required this.title,
+    required this.color,
+    required this.icon,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap ??
+          () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Opening $title...")),
+            );
+          },
+      child: Container(
+        decoration: BoxDecoration(
+          color: Color.fromRGBO(color.red, color.green, color.blue, 0.8),
+          borderRadius: BorderRadius.circular(15),
+          boxShadow: const <BoxShadow>[
+            BoxShadow(
+              color: Colors.black26,
+              offset: Offset(2, 2),
+              blurRadius: 4,
+            )
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment:
+              CrossAxisAlignment.stretch, // Ensure text spans full width
+          children: <Widget>[
+            CircleAvatar(
+              backgroundColor: Colors.white,
+              radius: 22, // Minimized radius
+              child: Icon(icon, color: Colors.black, size: 22), // Minimized icon size
+            ),
+            const SizedBox(height: 8), // Minimized height
+            Text(
+              title.toUpperCase(),
+              textAlign:
+                  TextAlign.center, // Center the text within its own bounds
+              style: const TextStyle(
+                fontWeight: FontWeight.w800,
+                fontSize: 12, // Minimized font size
+                color: Colors.black,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class HealthStatsPage extends StatelessWidget {
+  const HealthStatsPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Health Statistics'),
+      ),
+      body: const Center(
+        child: Text(
+          'Health Statistics Page',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+}
+
+class ProfilePage extends StatelessWidget {
+  const ProfilePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Profile'),
+      ),
+      body: const Center(
+        child: Text(
+          'Profile Page',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+}
+
+class NotificationPage extends StatelessWidget {
+  const NotificationPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Notifications'),
+      ),
+      body: const Center(
+        child: Text(
+          'Notifications Page',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+}
+
+class CalendarPage extends StatelessWidget {
+  const CalendarPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Calendar'),
+      ),
+      body: const Center(
+        child: Text(
+          'Calendar Page',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+}
