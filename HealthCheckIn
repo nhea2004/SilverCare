@@ -84,6 +84,39 @@ class DashboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> dashboardCards = <Widget>[
+      const DashboardCard(
+        title: "Blood Pressure",
+        color: Color(0xFFFF9837),
+        icon: Icons.monitor_heart,
+      ),
+      const DashboardCard(
+        title: "Sugar Level",
+        color: Color(0xFF37FF6C),
+        icon: Icons.bloodtype,
+      ),
+      const DashboardCard(
+        title: "Temperature",
+        color: Color(0xFF42A3F4),
+        icon: Icons.thermostat,
+      ),
+      const DashboardCard(
+        title: "Heart Rate",
+        color: Color(0xFFCD5C5C),
+        icon: Icons.favorite,
+      ),
+      DashboardCard(
+        title: "Emergency SOS",
+        color: Colors.red.shade600,
+        icon: Icons.warning,
+        onTap: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("SOS Alert Sent! 🚨")),
+          );
+        },
+      ),
+    ];
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Health Check-In'),
@@ -92,44 +125,23 @@ class DashboardPage extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         children: [
           const SizedBox(height: 10),
+          // First four cards in a 2x2 grid
           GridView.count(
-            crossAxisCount: 3, // Minimized to 3 columns
+            crossAxisCount: 2,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             mainAxisSpacing: 20,
             crossAxisSpacing: 20,
-            children: <Widget>[
-              const DashboardCard(
-                title: "Blood Pressure",
-                color: Color(0xFFFF9837),
-                icon: Icons.monitor_heart,
-              ),
-              const DashboardCard(
-                title: "Sugar Level",
-                color: Color(0xFF37FF6C),
-                icon: Icons.bloodtype,
-              ),
-              const DashboardCard(
-                title: "Temperature",
-                color: Color(0xFF42A3F4),
-                icon: Icons.thermostat,
-              ),
-              const DashboardCard(
-                title: "Heart Rate",
-                color: Color(0xFFCD5C5C),
-                icon: Icons.favorite,
-              ),
-              DashboardCard(
-                title: "Emergency SOS",
-                color: Colors.red.shade600,
-                icon: Icons.warning,
-                onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("SOS Alert Sent! 🚨")),
-                  );
-                },
-              ),
-            ],
+            children: dashboardCards.sublist(0, 4),
+          ),
+          const SizedBox(height: 20), // Spacing between the grid and the centered card
+          // The 5th card (SOS) centered in its own row
+          Center(
+            child: SizedBox(
+              // Calculate width for a single card to match the grid cell width
+              width: (MediaQuery.of(context).size.width - (20 * 2) - 20) / 2,
+              child: dashboardCards[4], // The SOS card
+            ),
           ),
         ],
       ),
@@ -174,22 +186,20 @@ class DashboardCard extends StatelessWidget {
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment:
-              CrossAxisAlignment.stretch, // Ensure text spans full width
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             CircleAvatar(
               backgroundColor: Colors.white,
-              radius: 22, // Minimized radius
-              child: Icon(icon, color: Colors.black, size: 22), // Minimized icon size
+              radius: 22,
+              child: Icon(icon, color: Colors.black, size: 22),
             ),
-            const SizedBox(height: 8), // Minimized height
+            const SizedBox(height: 8),
             Text(
               title.toUpperCase(),
-              textAlign:
-                  TextAlign.center, // Center the text within its own bounds
+              textAlign: TextAlign.center,
               style: const TextStyle(
                 fontWeight: FontWeight.w800,
-                fontSize: 12, // Minimized font size
+                fontSize: 12,
                 color: Colors.black,
               ),
             ),
