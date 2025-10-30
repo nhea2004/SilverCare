@@ -1,0 +1,367 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const SilverCareApp());
+}
+
+class SilverCareApp extends StatelessWidget {
+  const SilverCareApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Silver Care',
+      theme: ThemeData(
+        primarySwatch: Colors.orange,
+        scaffoldBackgroundColor: const Color(0xFFDEDEDE),
+        fontFamily: 'Montserrat',
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.orange,
+          foregroundColor: Colors.white,
+          titleTextStyle: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w800,
+            fontFamily: 'Montserrat',
+          ),
+        ),
+      ),
+      home: const MainNavigation(),
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+class MainNavigation extends StatefulWidget {
+  const MainNavigation({super.key});
+
+  @override
+  State<MainNavigation> createState() => _MainNavigationState();
+}
+
+class _MainNavigationState extends State<MainNavigation> {
+  int _selectedIndex = 4; // Default to Calendar page
+
+  final List<Widget> _pages = <Widget>[
+    const DashboardPage(),
+    const HealthStatsPage(),
+    const ProfilePage(),
+    const NotificationPage(),
+    const CalendarPage(), // Interactive Calendar
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _pages[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.orange,
+        unselectedItemColor: Colors.grey[700],
+        type: BottomNavigationBarType.fixed,
+        onTap: _onItemTapped,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+          BottomNavigationBarItem(icon: Icon(Icons.favorite), label: "Health"),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.notifications_none), label: "Notifications"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.calendar_today), label: "Calendar"),
+        ],
+      ),
+    );
+  }
+}
+
+class DashboardPage extends StatelessWidget {
+  const DashboardPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Health Check-In'),
+      ),
+      body: const Center(child: Text("Dashboard (Home)")),
+    );
+  }
+}
+
+class HealthStatsPage extends StatelessWidget {
+  const HealthStatsPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Health Statistics'),
+      ),
+      body: const Center(
+        child: Text(
+          'Health Statistics Page',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+}
+
+class ProfilePage extends StatelessWidget {
+  const ProfilePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Profile'),
+      ),
+      body: const Center(
+        child: Text(
+          'Profile Page',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+}
+
+class NotificationPage extends StatelessWidget {
+  const NotificationPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Notifications'),
+      ),
+      body: const Center(
+        child: Text(
+          'Notifications Page',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+}
+
+// ---- INTERACTIVE CALENDAR PAGE ----
+class CalendarPage extends StatefulWidget {
+  const CalendarPage({super.key});
+
+  @override
+  State<CalendarPage> createState() => _CalendarPageState();
+}
+
+class _CalendarPageState extends State<CalendarPage> {
+  DateTime _selectedDate = DateTime.now();
+  late DateTime _firstDayOfMonth;
+  late DateTime _lastDayOfMonth;
+
+  static const List<String> _monthNames = [
+    "JANUARY",
+    "FEBRUARY",
+    "MARCH",
+    "APRIL",
+    "MAY",
+    "JUNE",
+    "JULY",
+    "AUGUST",
+    "SEPTEMBER",
+    "OCTOBER",
+    "NOVEMBER",
+    "DECEMBER"
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _setMonthBoundaries();
+  }
+
+  void _setMonthBoundaries() {
+    _firstDayOfMonth = DateTime(_selectedDate.year, _selectedDate.month, 1);
+    _lastDayOfMonth = DateTime(_selectedDate.year, _selectedDate.month + 1, 0);
+  }
+
+  void _goToPreviousMonth() {
+    setState(() {
+      _selectedDate = DateTime(_selectedDate.year, _selectedDate.month - 1, 1);
+      _setMonthBoundaries();
+    });
+  }
+
+  void _goToNextMonth() {
+    setState(() {
+      _selectedDate = DateTime(_selectedDate.year, _selectedDate.month + 1, 1);
+      _setMonthBoundaries();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    int daysInMonth = _lastDayOfMonth.day;
+    int firstWeekday = _firstDayOfMonth.weekday % 7; // 0=Sun, 6=Sat (Sunday as first day of week)
+
+    // Prepare day labels for the calendar header
+    final List<Widget> dayLabelsChildren = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
+        .map<Widget>((d) => Expanded(child: Center(child: Text(d, style: const TextStyle(fontWeight: FontWeight.bold)))))
+        .toList();
+
+    // Prepare individual day buttons including leading empty spaces
+    List<Widget> dayButtons = [];
+    for (int i = 0; i < firstWeekday; i++) {
+      dayButtons.add(const Expanded(child: SizedBox()));
+    }
+    for (int day = 1; day <= daysInMonth; day++) {
+      final isToday = DateTime.now().year == _selectedDate.year &&
+          DateTime.now().month == _selectedDate.month &&
+          DateTime.now().day == day;
+      dayButtons.add(
+        Expanded(
+          child: GestureDetector(
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (_) => AlertDialog(
+                  title: Text('Reminders for ${_selectedDate.year}-${_selectedDate.month.toString().padLeft(2, '0')}-$day'),
+                  content: const Text('No reminders yet.'),
+                  actions: [
+                    TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text("Close")),
+                  ],
+                ),
+              );
+            },
+            child: Container(
+              margin: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: isToday ? Colors.orangeAccent : Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.orange.shade200),
+              ),
+              height: 36,
+              child: Center(
+                  child: Text(
+                day.toString(),
+                style: TextStyle(
+                    color: isToday ? Colors.white : Colors.black,
+                    fontWeight: FontWeight.bold),
+              )),
+            ),
+          ),
+        ),
+      );
+      // Removed the problematic SizedBox insertion that caused misalignment.
+    }
+
+    // Group day buttons into TableRows, including the day labels as the first row.
+    List<TableRow> weekRows = [
+      TableRow(children: dayLabelsChildren) // First row: Sun, Mon, Tue...
+    ];
+
+    int totalCalendarDayCells = firstWeekday + daysInMonth;
+    int numCalendarDayRows = (totalCalendarDayCells / 7).ceil();
+
+    for (int r = 0; r < numCalendarDayRows; r++) {
+      List<Widget> rowChildren = [];
+      for (int c = 0; c < 7; c++) {
+        int index = r * 7 + c;
+        if (index < dayButtons.length) {
+          rowChildren.add(dayButtons[index]);
+        } else {
+          // Add trailing empty cells for the last row
+          rowChildren.add(const Expanded(child: SizedBox()));
+        }
+      }
+      weekRows.add(TableRow(children: rowChildren));
+    }
+
+    final String monthYear = "${_monthNames[_selectedDate.month - 1]} ${_selectedDate.year}";
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Calendar'),
+        backgroundColor: Colors.orange,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          children: [
+            // Header: Month Navigation
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.chevron_left),
+                  onPressed: _goToPreviousMonth,
+                ),
+                Text(
+                  monthYear,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Montserrat',
+                    letterSpacing: 2,
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.chevron_right),
+                  onPressed: _goToNextMonth,
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            // Calendar Table (now includes day labels and days)
+            Expanded(
+              child: Table(
+                children: weekRows,
+                defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                columnWidths: const {
+                  0: FlexColumnWidth(),
+                  1: FlexColumnWidth(),
+                  2: FlexColumnWidth(),
+                  3: FlexColumnWidth(),
+                  4: FlexColumnWidth(),
+                  5: FlexColumnWidth(),
+                  6: FlexColumnWidth(),
+                },
+              ),
+            ),
+            const SizedBox(height: 12),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.add),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.orange,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30)
+                ),
+              ),
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                          title: const Text("Add Reminder"),
+                          content: const Text("This would open a form to add a reminder."),
+                          actions: [
+                            TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: const Text("Close"))
+                          ],
+                        ));
+              },
+              label: const Text("Add a reminder"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
