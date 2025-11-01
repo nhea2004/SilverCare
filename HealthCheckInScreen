@@ -41,12 +41,14 @@ class MainNavigation extends StatefulWidget {
 class _MainNavigationState extends State<MainNavigation> {
   int _selectedIndex = 0;
 
+  // The pages are already arranged to match the bottom navigation bar order:
+  // Home, Calendar, Notifications, Wellness, Profile
   final List<Widget> _pages = <Widget>[
-    const DashboardPage(),
-    const HealthStatsPage(),
-    const ProfilePage(),
-    const NotificationPage(),
-    const CalendarPage(),
+    const DashboardPage(), // Corresponds to 'Home'
+    const CalendarPage(), // Corresponds to 'Calendar'
+    const NotificationPage(), // Corresponds to 'Notifications'
+    const HealthStatsPage(), // Corresponds to 'Wellness'
+    const ProfilePage(), // Corresponds to 'Profile'
   ];
 
   void _onItemTapped(int index) {
@@ -65,14 +67,16 @@ class _MainNavigationState extends State<MainNavigation> {
         unselectedItemColor: Colors.grey[700],
         type: BottomNavigationBarType.fixed,
         onTap: _onItemTapped,
+        // The bottom navigation bar items are already in the desired sequence:
+        // Home, Calendar, Notifications, Wellness, Profile
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(icon: Icon(Icons.favorite), label: "Health"),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.notifications_none), label: "Notifications"),
           BottomNavigationBarItem(
               icon: Icon(Icons.calendar_today), label: "Calendar"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.notifications_none), label: "Notifications"),
+          BottomNavigationBarItem(icon: Icon(Icons.favorite), label: "Wellness"),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
         ],
       ),
     );
@@ -84,34 +88,59 @@ class DashboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> dashboardCards = <Widget>[
-      const DashboardCard(
+    final List<DashboardCard> dashboardCards = <DashboardCard>[
+      DashboardCard(
         title: "Blood Pressure",
-        color: Color(0xFFFF9837),
+        color: const Color(0xFFFF9837),
         icon: Icons.monitor_heart,
+        onTap: () {
+          Navigator.of(context).push<void>(
+            MaterialPageRoute<void>(
+                builder: (BuildContext context) => const BloodPressurePage()),
+          );
+        },
       ),
-      const DashboardCard(
+      DashboardCard(
         title: "Sugar Level",
-        color: Color(0xFF37FF6C),
+        color: const Color(0xFF37FF6C),
         icon: Icons.bloodtype,
+        onTap: () {
+          Navigator.of(context).push<void>(
+            MaterialPageRoute<void>(
+                builder: (BuildContext context) => const SugarLevelPage()),
+          );
+        },
       ),
-      const DashboardCard(
+      DashboardCard(
         title: "Temperature",
-        color: Color(0xFF42A3F4),
+        color: const Color(0xFF42A3F4),
         icon: Icons.thermostat,
+        onTap: () {
+          Navigator.of(context).push<void>(
+            MaterialPageRoute<void>(
+                builder: (BuildContext context) => const TemperaturePage()),
+          );
+        },
       ),
-      const DashboardCard(
+      DashboardCard(
         title: "Heart Rate",
-        color: Color(0xFFCD5C5C),
+        color: const Color(0xFFCD5C5C),
         icon: Icons.favorite,
+        onTap: () {
+          Navigator.of(context).push<void>(
+            MaterialPageRoute<void>(
+                builder: (BuildContext context) => const HeartRatePage()),
+          );
+        },
       ),
       DashboardCard(
         title: "Emergency SOS",
         color: Colors.red.shade600,
         icon: Icons.warning,
         onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("SOS Alert Sent! 🚨")),
+          Navigator.of(context).push<void>(
+            MaterialPageRoute<void>(
+                builder: (BuildContext context) => const EmergencySosPage()),
           );
         },
       ),
@@ -123,7 +152,7 @@ class DashboardPage extends StatelessWidget {
       ),
       body: ListView(
         padding: const EdgeInsets.all(20),
-        children: [
+        children: <Widget>[
           const SizedBox(height: 10),
           // First four cards in a 2x2 grid
           GridView.count(
@@ -166,12 +195,7 @@ class DashboardCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onTap ??
-          () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Opening $title...")),
-            );
-          },
+      onTap: onTap, // onTap is now provided by the parent
       child: Container(
         decoration: BoxDecoration(
           color: Color.fromRGBO(color.red, color.green, color.blue, 0.8),
@@ -210,37 +234,18 @@ class DashboardCard extends StatelessWidget {
   }
 }
 
-class HealthStatsPage extends StatelessWidget {
-  const HealthStatsPage({super.key});
+class CalendarPage extends StatelessWidget {
+  const CalendarPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Health Statistics'),
+        title: const Text('Calendar'),
       ),
       body: const Center(
         child: Text(
-          'Health Statistics Page',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-      ),
-    );
-  }
-}
-
-class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Profile'),
-      ),
-      body: const Center(
-        child: Text(
-          'Profile Page',
+          'Calendar Page',
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
       ),
@@ -267,19 +272,174 @@ class NotificationPage extends StatelessWidget {
   }
 }
 
-class CalendarPage extends StatelessWidget {
-  const CalendarPage({super.key});
+class HealthStatsPage extends StatelessWidget {
+  const HealthStatsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Calendar'),
+        title: const Text('Wellness Statistics'),
       ),
       body: const Center(
         child: Text(
-          'Calendar Page',
+          'Wellness Statistics Page',
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+}
+
+class ProfilePage extends StatelessWidget {
+  const ProfilePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Profile'),
+      ),
+      body: const Center(
+        child: Text(
+          'Profile Page',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+}
+
+// New Pages for Dashboard Cards
+class BloodPressurePage extends StatelessWidget {
+  const BloodPressurePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Blood Pressure Details'),
+      ),
+      body: const Center(
+        child: Text(
+          'Blood Pressure Monitoring and History',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
+  }
+}
+
+class SugarLevelPage extends StatelessWidget {
+  const SugarLevelPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Sugar Level Details'),
+      ),
+      body: const Center(
+        child: Text(
+          'Sugar Level Tracking and Trends',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
+  }
+}
+
+class TemperaturePage extends StatelessWidget {
+  const TemperaturePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Temperature Details'),
+      ),
+      body: const Center(
+        child: Text(
+          'Body Temperature Log',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
+  }
+}
+
+class HeartRatePage extends StatelessWidget {
+  const HeartRatePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Heart Rate Details'),
+      ),
+      body: const Center(
+        child: Text(
+          'Heart Rate Monitoring and Analysis',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
+  }
+}
+
+class EmergencySosPage extends StatelessWidget {
+  const EmergencySosPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Emergency SOS'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Icon(
+              Icons.warning_amber_rounded,
+              color: Colors.red.shade700,
+              size: 80,
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'Sending Emergency Alert...',
+              style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.red.shade800),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              'Your emergency contacts have been notified.',
+              style: TextStyle(fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 30),
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.of(context).pop(); // Go back to the dashboard
+              },
+              icon: const Icon(Icons.arrow_back),
+              label: const Text('Back to Dashboard'),
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.orange,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                textStyle: const TextStyle(fontSize: 18),
+              ),
+            ),
+          ],
         ),
       ),
     );
