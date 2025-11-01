@@ -11,7 +11,7 @@ class FunctionalDashboardApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Dashboard Demo',
+      title: 'Dashboard App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         fontFamily: 'Montserrat',
@@ -33,20 +33,21 @@ class MainNavigationScreen extends StatefulWidget {
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   int _selectedIndex = 0;
 
+  // Reordered according to the new navigation bar arrangement: home, calendar, notifications, wellness, profile
   static const List<Widget> _widgetOptions = <Widget>[
-    DashboardContentScreen(),
-    Center(
-        child: Text('Health Screen Content',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold))),
-    Center(
-        child: Text('Notifications Screen Content',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold))),
+    DashboardContentScreen(), // Home
     Center(
         child: Text('Calendar Screen Content',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold))),
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold))), // Calendar
+    Center(
+        child: Text('Notifications Screen Content',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold))), // Notifications
+    Center(
+        child: Text('Wellness Screen Content',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold))), // Wellness
     Center(
         child: Text('Profile Screen Content',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold))),
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold))), // Profile
   ];
 
   void _onItemTapped(int index) {
@@ -83,15 +84,16 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey,
         showUnselectedLabels: true,
+        // Reordered according to the new navigation bar arrangement: home, calendar, notifications, wellness, profile
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
               icon: Icon(Icons.home_filled), label: 'Home'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.health_and_safety), label: 'Health'),
+              icon: Icon(Icons.calendar_today), label: 'Calendar'),
           BottomNavigationBarItem(
               icon: Icon(Icons.notifications), label: 'Notifications'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_today), label: 'Calendar'),
+              icon: Icon(Icons.spa), label: 'Wellness'),
           BottomNavigationBarItem(
               icon: Icon(Icons.person), label: 'Profile'),
         ],
